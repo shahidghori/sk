@@ -2,10 +2,16 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title></title>
+    <title>Dynamic Object Scaling with Mobile Orientation</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-mesh-particles-component@0.5.0/aframe-mesh-particles-component.js"></script>
     <script src="../src/index.js"></script>
+    <style>
+      /* Style for scaling the object dynamically */
+      #scalable-object {
+        transition: transform 0.1s ease-in-out;
+      }
+    </style>
   </head>
   <body>
     <a-scene background="color: grey" renderer="sortObjects: false">
@@ -16,43 +22,66 @@
         <a-asset-item id="transparent" src="transparent.glb"></a-asset-item>
         <a-asset-item id="leaf" src="leaf.glb"></a-asset-item>
       </a-assets>
-      <!-- Camera Entity with WASD Controls -->
+
       <a-entity rotation="0 90 0">
-        <a-camera position="0 1.2 0" wasd-controls="acceleration: 20" id="camera"></a-camera>
+        <a-camera position="0 1.2 0" wasd-controls="acceleration: 20"></a-camera>
       </a-entity>
 
-      <!-- Image portals -->
+      <!-- Placeholders for Image Portals -->
       <a-entity position="-3 1.2 0" rotation="0 90 0" image-portal="src: #fall"></a-entity>
       <a-entity position="0 1.2 -1" rotation="0 0 0" image-portal="src: #spring"></a-entity>
       <a-entity position="1 1.2 0" rotation="0 -90 0" image-portal="src: #winter"></a-entity>
       <a-entity position="0 1.2 1" rotation="0 180 0" image-portal="src: #transparent"></a-entity>
 
-      <!-- Portal with leaf effect -->
-      <a-entity position="0 1.2 0" rotation="0 0 0" id="leafPortal"
-        geometry="primitive: plane; width: 2; height: 2;"
-        material="src: #leaf; opacity: 0.5"
-        class="clickable"
-        event-set__mouseenter="_event: mouseenter; scale: 1.2 1.2 1.2"
-        event-set__mouseleave="_event: mouseleave; scale: 1 1 1"
-        cursor-listener></a-entity>
-
-      <!-- Leaf Model with particle effect -->
+      <!-- Scalable Object -->
       <a-gltf-model
+        id="scalable-object"
         src="#leaf"
         scale="0.2 0.2 0.2"
         position="-3 4 0"
         rotation="90 0 0"
-        mesh-particles="lifeTime: 1..8; spawnRate: 100; color: yellow,red; acceleration: 0 0 0; velocity: 0 0 1..0 0 5; radialVelocity: 0; radialPosition: 0.1..10; radialType: circle; rotation: 0 0 0,180 180 180;"
+        mesh-particles="
+        lifeTime: 1..8;
+        spawnRate: 100;
+        color: yellow,red;
+        acceleration: 0 0 0;
+        velocity: 0 0 1..0 0 5;
+        radialVelocity: 0;
+        radialPosition: 0.1..10;
+        radialType: circle;
+        rotation: 0 0 0,180 180 180;
+        "
       ></a-gltf-model>
+
     </a-scene>
 
     <script>
-      // Cursor event listener to move camera to leaf.glb location when the portal is clicked/tapped
-      document.querySelector('#leafPortal').addEventListener('click', function () {
-        var camera = document.querySelector('#camera');
-        camera.setAttribute('position', '0 1.2 2');  // Position the camera inside the leaf portal
-        camera.setAttribute('rotation', '0 180 0');  // Adjust the rotation if necessary
-      });
+      // Scaling logic based on device orientation
+      let scalableObject = document.getElementById('scalable-object');
+      let initialDistance = 0;
+
+      // This function will adjust the scale of the object based on the device's orientation
+      function handleOrientation(event) {
+        let gamma = event.gamma; // gamma is the left-right tilt of the device (in degrees)
+
+        // Initialize the initial distance based on the first device tilt
+        if (initialDistance === 0) {
+          initialDistance = Math.abs(gamma); // Set the initial tilt as the reference
+        }
+
+        // Calculate scale based on device orientation (gamma)
+        let scaleFactor = Math.abs(gamma) / initialDistance;
+
+        // Restrict the scaling between a minimum and maximum value to avoid too small or too large scales
+        scaleFactor = Math.max(0.5, Math.min(3, scaleFactor)); 
+
+        // Apply the scale to the object
+        scalableObject.setAttribute('scale', `${scaleFactor} ${scaleFactor} ${scaleFactor}`);
+      }
+
+      // Event listener to handle device orientation changes
+      window.addEventListener('deviceorientation', handleOrientation);
+
     </script>
   </body>
 </html>

@@ -1,0 +1,68 @@
+html, body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  display: flex;
+  font-family: sans-serif;
+}
+@media (max-width : 600px) {
+  html, body {
+    height: auto;
+  }
+  body {
+    flex-direction: column;
+  }
+  a-scene#scene {
+    height: 400px;
+    flex: none;
+  }
+  #sidebar {
+    align-self: center;
+  }
+}
+#sidebar {
+  margin: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 400px;
+}
+a-scene {
+  flex: 1;
+}
+h1 {
+  text-align: center;
+}
+#inputs {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 0.5em;
+}
+#inputs > * {
+  margin: 0.5em 0;
+}
+#inputs * {
+  font-size: 12pt;
+	align-self: center;
+}
+#inputs label {
+  justify-self: end;
+	font-weight: bold;
+}
+#generateButton {
+	grid-column: span 2;
+  padding: 0.5em;
+}
+#download {
+  text-align: center;
+  margin: 0.5em 0;
+  display: none;
+}
+#generateButton, #download {
+	font-weight: bold;
+  font-size: 14pt;
+}
+#download:not([href=""]) {
+  display: block;
+}

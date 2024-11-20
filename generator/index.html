@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="generator.css" />
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="../src/index.js"></script>
+  </head>
+  <body>
+    <div id="sidebar">
+      <h1>Image Portal Generator</h1>
+      <form id="inputs">
+        <label>Image:</label><input id="image" type="file" required accept=".jpg,.jpeg,.png" />
+        <label>Diameter:</label><input id="diameterInput" value="2" />
+        <label>Hole:</label>
+        <select id="hole">
+          <option>circle</option>
+          <option>square</option>
+          <option>custom</option>
+        </select>
+        <label id="holeShapeLabel">Hole shape:</label><input id="holeShape" type="file" accept=".svg" required />
+        <label>Hole size:</label><input id="holeSize" value="0.5" />
+        <label>Hole color:</label><input id="holeColor" type="color" value="#ffffff" />
+        <label>Hole roughness:</label><input id="holeRoughness" type="range" max="1" step="0.01" value="1" />
+        <label>Hole metalness:</label><input id="holeMetalness" type="range" max="1" step="0.01" value="0" />
+        <button id="generateButton">Generate</button>
+      </form>
+      <a id="download" download="image-portal.glb" href="">Download GLB</a>
+      <p>
+        <strong>Image:</strong> Ideally, an equirectangular image. You can also use transparent images.<br />
+        <strong>Hole:</strong> Either a circle, square, or a custom SVG shape.
+        <p>
+          The GLB models made with this tool are meant to be used with the <a href="https://www.npmjs.com/package/aframe-image-portal" target="_blank">aframe-image-portal component</a>.
+        </p>
+      </p>
+      <div>
+      <a href="https://brianpeiris.github.io/aframe-image-portal/examples" target="_blank">Examples</a>
+      <a href="https://github.com/brianpeiris/aframe-image-portal" target="_blank">GitHub</a>
+      <a href="https://www.npmjs.com/package/aframe-image-portal" target="_blank">NPM</a>
+      </div>
+    </div>
+    <a-scene id="scene" embedded background="color: grey;">
+      <a-camera id="camera" position="0 1 0" wasd-controls="fly: true; acceleration: 20;"></a-camera>
+      <a-entity id="grid"></a-entity>
+      <a-entity id="portal"></a-entity>
+    </a-scene>
+    <script src="bundle.js"></script>
+  </body>
+</html>

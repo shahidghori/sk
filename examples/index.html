@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Real-Time Portal</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-mesh-particles-component@0.5.0/aframe-mesh-particles-component.js"></script>
+  </head>
+  <body>
+    <a-scene background="color: grey" renderer="sortObjects: false">
+      <a-assets>
+        <a-asset-item id="fall" src="fall.glb"></a-asset-item>
+        <a-asset-item id="winter" src="winter.glb"></a-asset-item>
+        <a-asset-item id="spring" src="spring.glb"></a-asset-item>
+        <a-asset-item id="transparent" src="transparent.glb"></a-asset-item>
+        <a-asset-item id="leaf" src="leaf.glb"></a-asset-item>
+      </a-assets>
+
+      <!-- Camera with controls -->
+      <a-camera position="0 1.2 0" wasd-controls="acceleration: 20">
+        <!-- The cursor to interact with portals -->
+        <a-cursor color="yellow" fuse="true" timeout="1500"></a-cursor>
+      </a-camera>
+
+      <!-- Portal entity (static in space) -->
+      <a-entity id="portal" position="0 1.2 -5" rotation="0 0 0" scale="2 2 0.1" geometry="primitive: plane" material="src: #fall; side: double;">
+      </a-entity>
+
+      <!-- Leaf model with particle effect -->
+      <a-gltf-model
+        src="#leaf"
+        scale="0.2 0.2 0.2"
+        position="-3 4 0"
+        rotation="90 0 0"
+        mesh-particles="lifeTime: 1..8; spawnRate: 100; color: yellow,red; acceleration: 0 0 0; velocity: 0 0 1..0 0 5; radialVelocity: 0; radialPosition: 0.1..10; radialType: circle; rotation: 0 0 0,180 180 180;"
+      ></a-gltf-model>
+    </a-scene>
+
+    <script>
+      // This script handles the camera transition effect when near the portal
+      const camera = document.querySelector('a-camera');
+      const portal = document.querySelector('#portal');
+      
+      // Portal position and size
+      const portalPosition = portal.getAttribute('position');
+      const portalWidth = 2; // Portal width (can be adjusted)
+
+      // Check the distance between the camera and the portal
+      function checkPortalProximity() {
+        const cameraPos = camera.getAttribute('position');
+        const distance = Math.sqrt(
+          Math.pow(cameraPos.x - portalPosition.x, 2) +
+          Math.pow(cameraPos.y - portalPosition.y, 2) +
+          Math.pow(cameraPos.z - portalPosition.z, 2)
+        );
+
+        // If the camera is close enough to the portal (e.g., 2 units), simulate entering the portal
+        if (distance < 2) {
+          // Transition the camera view to simulate entering the portal
+          // Set camera position inside the portal (adjust to make it feel like "entering")
+          camera.setAttribute('position', `${portalPosition.x} ${portalPosition.y} ${portalPosition.z - 1}`);
+
+          // Optionally, adjust camera rotation or other effects to simulate looking out of the portal
+          camera.setAttribute('rotation', '0 0 0'); // Change to the desired rotation when inside
+        }
+      }
+
+      // Call the checkPortalProximity function continuously
+      setInterval(checkPortalProximity, 50);
+    </script>
+  </body>
+</html>
